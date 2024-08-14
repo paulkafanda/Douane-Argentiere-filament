@@ -70,6 +70,7 @@ class Document extends Model
     {
         return [
             TextColumn::make('nom_document')
+                ->description(fn(Document $document) => $document->observation)
                 ->searchable(),
             TextColumn::make('date_document')
                 ->dateTime()
