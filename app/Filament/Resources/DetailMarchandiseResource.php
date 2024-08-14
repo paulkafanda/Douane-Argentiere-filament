@@ -31,9 +31,6 @@ class DetailMarchandiseResource extends Resource
                 Forms\Components\Select::make('marchandise_id')
                     ->relationship('marchandise', 'designation')
                     ->required(),
-                Forms\Components\TextInput::make('dossier_id')
-                    ->required()
-                    ->numeric(),
             ]);
     }
 

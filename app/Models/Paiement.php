@@ -46,7 +46,11 @@ class Paiement extends Model
 
     public function approve()
     {
-        $this->statut = PaiementState::YES;
+        if ($this->statut === PaiementState::YES) {
+            $this->statut = PaiementState::NO;
+        } else {
+            $this->statut = PaiementState::YES;
+        }
         $this->save();
     }
 }

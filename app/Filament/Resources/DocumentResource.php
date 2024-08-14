@@ -44,7 +44,12 @@ class DocumentResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->recordUrl(fn (Document $record) => '/storage/'.$record->piece_jointe)->openRecordUrlInNewTab();
+            ->recordUrl(fn (Document $record) => '/storage/'.$record->piece_jointe)->openRecordUrlInNewTab()
+            ->groups([
+                Tables\Grouping\Group::make('dossier.nom_dossier')
+                ->label('Nom du Dossier'),
+            ])
+            ->defaultSort('nom_dossier');
     }
 
     public static function getRelations(): array

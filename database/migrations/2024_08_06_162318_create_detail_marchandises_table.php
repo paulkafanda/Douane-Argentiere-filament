@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->integer('qte');
             $table->foreignId('marchandise_id')->constrained();
-            $table->foreignId('dossier_id')->constrained();
             $table->timestamps();
         });
 

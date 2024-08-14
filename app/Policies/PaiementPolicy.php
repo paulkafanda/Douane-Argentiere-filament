@@ -38,6 +38,11 @@ class PaiementPolicy
      */
     public function update(User $user, Paiement $paiement): bool
     {
+        return $user->role === UserRole::CLIENT;
+    }
+
+    public function approve(User $user): bool
+    {
         return $user->role === UserRole::FINANCING;
     }
 

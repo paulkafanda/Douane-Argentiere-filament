@@ -12,9 +12,9 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Auth\Access\Gate;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Number;
 
 class PaiementResource extends Resource
@@ -86,8 +86,10 @@ class PaiementResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                    Tables\Actions\Action::make('Aprouve')
-                        ->visible(fn(Paiement $record) => $record->statut === PaiementState::NO)
+                    Tables\Actions\Action::make('check')
+                        ->visible(function(Paiement $record) {
+                            return Gate::check('update', [auth()->user()]);
+                        })
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
                     ->action(fn($record) => $record->approve()),

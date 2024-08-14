@@ -49,7 +49,7 @@ class ViewDossier extends ViewRecord
                                 ->badge()
                                 ->color(PaiementState::getColor())
                                 ->default(PaiementState::NO),
-                        ])
+                        ])->columns(3)
                     ])
                     ->columns(3)
                 ]),
