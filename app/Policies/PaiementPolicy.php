@@ -12,17 +12,17 @@ class PaiementPolicy
     /**
      * Determine whether the user can view any models.
      */
-//    public function viewAny(User $user): bool
-//    {
-//        //
-//    }
+    public function viewAny(User $user): bool
+    {
+        return true;
+    }
 
     /**
      * Determine whether the user can view the model.
      */
     public function view(User $user, Paiement $paiement): bool
     {
-        return $user->isOperatorOrFinancing() || $user->id === $paiement->facture->dossier->user->id;
+        return $user->isOperatorOrFinancing() || $user->id === $paiement->dossier->user->id;
     }
 
     /**
@@ -38,7 +38,7 @@ class PaiementPolicy
      */
     public function update(User $user, Paiement $paiement): bool
     {
-        return $user->role === UserRole::CLIENT && $user->id === $paiement->facture->dossier->user->id;
+        return $user->role === UserRole::FINANCING;
     }
 
     /**

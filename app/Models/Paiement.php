@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\PaiementState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,6 +21,7 @@ class Paiement extends Model
         'montant',
         'date_paiement',
         'preuve_paiement',
+        'dossier_id',
         'facture_id',
     ];
 
@@ -32,11 +34,19 @@ class Paiement extends Model
         'id' => 'integer',
 //        'montant' => 'decimal',
         'date_paiement' => 'timestamp',
+        'dossier_id' => 'integer',
         'facture_id' => 'integer',
+        'statut' => PaiementState::class,
     ];
 
-    public function facture(): BelongsTo
+    public function dossier(): BelongsTo
     {
-        return $this->belongsTo(Facture::class);
+        return $this->belongsTo(Dossier::class);
+    }
+
+    public function approve()
+    {
+        $this->statut = PaiementState::YES;
+        $this->save();
     }
 }

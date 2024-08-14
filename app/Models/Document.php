@@ -2,6 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\DocumentTypes;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -40,17 +46,41 @@ class Document extends Model
     public static function getForm(): array
     {
         return [
+            Select::make('nom_document')
+            ->options(DocumentTypes::class)
+            ->required(),
+            Select::make('dossier_id')
+                ->relationship('dossier', 'nom_dossier')
+                ->required(),
+            DateTimePicker::make('date_document')
+                ->default(now())
+            ->required(),
+            DateTimePicker::make('date_expiration')
+                ->default(now())
+            ->required(),
+            TextArea::make('observation')
+            ->required(),
+            FileUpload::make('piece_jointe')
+            ->acceptedFileTypes(['application/pdf'])
+            ->required(),
+        ];
+    }
+
+    public static function getTableColumns(): array
+    {
+        return [
             TextColumn::make('nom_document')
                 ->searchable(),
             TextColumn::make('date_document')
                 ->dateTime()
-                ->sortable(),
+                ->sortable()
+            ->label('Date'),
             TextColumn::make('date_expiration')
                 ->dateTime()
                 ->sortable(),
             TextColumn::make('piece_jointe')
                 ->searchable(),
-            TextColumn::make('dossier.id')
+            TextColumn::make('dossier.nom_dossier')
                 ->numeric()
                 ->sortable(),
             TextColumn::make('created_at')
@@ -63,6 +93,7 @@ class Document extends Model
                 ->toggleable(isToggledHiddenByDefault: true),
         ];
     }
+
     public function dossier(): BelongsTo
     {
         return $this->belongsTo(Dossier::class);

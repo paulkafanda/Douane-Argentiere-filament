@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\UserRole;
 use App\Filament\Resources\FactureResource\Pages;
 use App\Filament\Resources\FactureResource\RelationManagers;
 use App\Models\Facture;
@@ -86,5 +87,14 @@ class FactureResource extends Resource
 //            'create' => Pages\CreateFacture::route('/create'),
 //            'edit' => Pages\EditFacture::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        return match (auth()->user()->role) {
+            UserRole::CLIENT => $query->whereRelation('dossier', 'user_id', auth()->id()),
+            default => $query,
+        };
     }
 }

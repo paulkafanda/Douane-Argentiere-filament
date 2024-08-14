@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\DossierResource\RelationManagers;
 
+use App\Enums\UserRole;
 use App\Models\Document;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -9,6 +10,8 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class DocumentsRelationManager extends RelationManager
@@ -18,18 +21,14 @@ class DocumentsRelationManager extends RelationManager
     public function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Forms\Components\TextInput::make('nom_document')
-                    ->required()
-                    ->maxLength(255),
-            ]);
+            ->schema(Document::getForm());
     }
 
     public function table(Table $table): Table
     {
         return $table
             ->recordTitleAttribute('nom_document')
-            ->columns(Document::getForm())
+            ->columns(Document::getTableColumns())
             ->filters([
                 //
             ])
@@ -47,6 +46,7 @@ class DocumentsRelationManager extends RelationManager
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
-            ]);
+            ])
+            ->recordUrl(fn (Document $record) => '/storage/'.$record->piece_jointe)->openRecordUrlInNewTab();
     }
 }

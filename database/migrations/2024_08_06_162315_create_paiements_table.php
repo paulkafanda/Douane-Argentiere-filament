@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\PaiementState;
+use App\Models\Paiement;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,7 +21,8 @@ return new class extends Migration
             $table->decimal('montant');
             $table->timestamp('date_paiement');
             $table->string('preuve_paiement');
-            $table->foreignId('facture_id')->constrained();
+            $table->string('statut')->default(PaiementState::NO->value);
+            $table->foreignId('dossier_id')->constrained();
             $table->timestamps();
         });
 

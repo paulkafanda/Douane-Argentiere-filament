@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\UserRole;
 use App\Filament\Resources\MarchandiseResource\Pages;
 use App\Filament\Resources\MarchandiseResource\RelationManagers;
 use App\Models\Marchandise;
@@ -83,5 +84,14 @@ class MarchandiseResource extends Resource
 //            'create' => Pages\CreateMarchandise::route('/create'),
 //            'edit' => Pages\EditMarchandise::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        return match (auth()->user()->role) {
+            UserRole::CLIENT => $query->whereRelation('dossier', 'user_id', auth()->id()),
+            default => $query,
+        };
     }
 }

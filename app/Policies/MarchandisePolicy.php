@@ -13,7 +13,7 @@ class MarchandisePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isOperatorOrFinancing();
+        return true;
     }
 
     /**

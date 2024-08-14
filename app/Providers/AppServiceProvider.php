@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Models\Client;
 use Filament\Actions\CreateAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Table;
+use Filament\Tables\Actions\CreateAction as TableCreateAction;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Hashing\Hasher;
@@ -36,6 +38,13 @@ class AppServiceProvider extends ServiceProvider
         });
         CreateAction::configureUsing(function ($action) {
             return $action->slideOver();
+        });
+
+        Table::configureUsing(function (Table $table) {
+            $table->emptyStateActions([
+                TableCreateAction::make()
+                ->slideOver()
+            ]);
         });
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Enums\DeliveryState;
+use App\Enums\UserRole;
 use App\Filament\Resources\DossierResource\Pages;
 use App\Filament\Resources\DossierResource\RelationManagers;
 use App\Models\Dossier;
@@ -47,13 +48,13 @@ class DossierResource extends Resource
                         true => 'success',
                         default => 'danger',
                     }),
-                Tables\Columns\IconColumn::make('facture.paiement.montant')
+                Tables\Columns\IconColumn::make('paiement.montant')
                     ->icon(fn ($state) => match (is_numeric($state)) {
                         true => 'heroicon-o-document-check',
                         default => 'heroicon-o-no-symbol'
                     })
                     ->color(fn ($state) => match (is_numeric($state)) {
-                        true => 'success',
+                        true => 'primary',
                         default => 'warning',
                     })
                     ->default('heroicon-o-no-symbol'),
@@ -81,6 +82,9 @@ class DossierResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make(),
             ]);
     }
 
@@ -100,5 +104,14 @@ class DossierResource extends Resource
 //            'edit' => Pages\EditDossier::route('/{record}/edit'),
             'view' => Pages\ViewDossier::route('/{record}'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        return match (auth()->user()->role) {
+            UserRole::CLIENT => $query->where('user_id', auth()->id()),
+            default => $query,
+        };
     }
 }

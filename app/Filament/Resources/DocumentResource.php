@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Enums\DocumentTypes;
+use App\Enums\UserRole;
 use App\Filament\Resources\DocumentResource\Pages;
 use App\Filament\Resources\DocumentResource\RelationManagers;
 use App\Models\Document;
@@ -31,26 +32,7 @@ class DocumentResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('nom_document')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('date_expiration')
-                    ->dateTime()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('piece_jointe')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('dossier.nom_dossier')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
+            ->columns(Document::getTableColumns())
             ->filters([
                 //
             ])
@@ -61,7 +43,8 @@ class DocumentResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->recordUrl(fn (Document $record) => '/storage/'.$record->piece_jointe)->openRecordUrlInNewTab();
     }
 
     public static function getRelations(): array
@@ -78,5 +61,14 @@ class DocumentResource extends Resource
 //            'create' => Pages\CreateDocument::route('/create'),
 //            'edit' => Pages\EditDocument::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        return match (auth()->user()->role) {
+            UserRole::CLIENT => $query->whereRelation('dossier', 'user_id', auth()->id()),
+            default => $query,
+        };
     }
 }

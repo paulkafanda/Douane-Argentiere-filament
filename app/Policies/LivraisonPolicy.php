@@ -13,7 +13,7 @@ class LivraisonPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isOperator();
+        return true;
     }
 
     /**

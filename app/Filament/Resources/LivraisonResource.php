@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Enums\DeliveryState;
+use App\Enums\UserRole;
 use App\Filament\Resources\LivraisonResource\Pages;
 use App\Filament\Resources\LivraisonResource\RelationManagers;
 use App\Models\Livraison;
@@ -25,9 +26,11 @@ class LivraisonResource extends Resource
         return $form
             ->schema([
                 Forms\Components\DateTimePicker::make('date_livraison')
-                    ->required(),
+                    ->required()
+                ->default(now()->addWeeks(1)),
                 Forms\Components\Select::make('statut_livraison')
                     ->options(DeliveryState::class)
+                    ->default(DeliveryState::PENDING)
                     ->required(),
                 Forms\Components\Select::make('dossier_id')
                     ->relationship('dossier', 'nom_dossier')
@@ -85,5 +88,14 @@ class LivraisonResource extends Resource
 //            'create' => Pages\CreateLivraison::route('/create'),
 //            'edit' => Pages\EditLivraison::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        return match (auth()->user()->role) {
+            UserRole::CLIENT => $query->whereRelation('dossier', 'user_id', auth()->id()),
+            default => $query,
+        };
     }
 }

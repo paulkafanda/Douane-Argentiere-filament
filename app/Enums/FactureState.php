@@ -10,9 +10,9 @@ enum FactureState: string
     public static function getColor(): \Closure
     {
         return function ($state) {
-            return match ($state) {
-                self::YES => 'success',
-                self::NO => 'danger',
+            return match (is_numeric($state)) {
+                true => 'primary',
+                default => 'danger',
             };
         };
     }

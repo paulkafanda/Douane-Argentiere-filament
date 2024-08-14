@@ -4,6 +4,7 @@ namespace App\Filament\Resources\DossierResource\Pages;
 
 use App\Enums\DeliveryState;
 use App\Enums\FactureState;
+use App\Enums\PaiementState;
 use App\Filament\Resources\DossierResource;
 use App\Models\Dossier;
 use Filament\Actions\Action;
@@ -42,7 +43,12 @@ class ViewDossier extends ViewRecord
                                 ->badge()
                                 ->default(FactureState::NO->value)
                                 ->label('Facturee')
-//                            ->getColor(FactureState::getColor()),
+//                              ->getColor(FactureState::getColor()),
+                                ->color(FactureState::getColor()),
+                            TextEntry::make('paiement.statut')
+                                ->badge()
+                                ->color(PaiementState::getColor())
+                                ->default(PaiementState::NO),
                         ])
                     ])
                     ->columns(3)
