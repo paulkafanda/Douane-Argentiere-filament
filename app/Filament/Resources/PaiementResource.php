@@ -88,7 +88,7 @@ class PaiementResource extends Resource
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('check')
                         ->visible(function(Paiement $record) {
-                            return Gate::check('update', [auth()->user()]);
+                            return Gate::allows('approve', $record);
                         })
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
