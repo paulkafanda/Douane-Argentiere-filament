@@ -44,6 +44,7 @@ class Dossier extends Model
                 Select::make('user_id')
                     ->relationship('user', 'name')
                     ->required()
+                    ->label('Client')
                 ->searchable(),
             ])->columnSpanFull(),
         ];
