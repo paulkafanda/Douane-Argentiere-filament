@@ -11,6 +11,11 @@ class PaiementChart extends ChartWidget
     protected int | string | array $columnSpan = 1;
     public ?string $filter = '3months';
 
+    public static function canView(): bool
+    {
+        return auth()->user()->isOperatorOrFinancing();
+    }
+
     protected function getFilters(): ?array
     {
         return [
