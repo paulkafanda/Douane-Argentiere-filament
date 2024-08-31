@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PaiementResource\Pages;
 
 use App\Filament\Resources\PaiementResource;
+use App\Livewire\PaiementChart;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -14,6 +15,13 @@ class ListPaiements extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            PaiementChart::class
         ];
     }
 }
